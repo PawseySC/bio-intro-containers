@@ -34,7 +34,7 @@ If you're running at Pawsey *e.g.* on Zeus, all you need is to `module load next
 Let's `cd` into the appropriate directory:
 
 ```
-$ cd $TUTO/demos/nextflow
+$ cd $TUTO/exercises/nextflow
 ```
 {: .bash}
 

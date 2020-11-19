@@ -57,7 +57,7 @@ Note that Singularity versions prior to 3.0 used different image formats, charac
 Let's cd into the relevant demo directory:
 
 ```
-$ cd $TUTO/demos/lolcow_docker
+$ cd $TUTO/exercises/lolcow_docker
 ```
 {: .bash}
 

@@ -38,7 +38,7 @@ $ export TUTO=$(pwd)
 > > Open a second terminal in the machine where you're running the tutorial, then run the script `pull_big_images.sh` to start downloading a few images that you'll require later:
 > >
 > > ```
-> > $ cd $TUTO/demos
+> > $ cd $TUTO/exercises
 > > $ nohup bash ./pull_big_images.sh &
 > > ```
 > > {: .bash}
@@ -46,7 +46,7 @@ $ export TUTO=$(pwd)
 > > **In alternative**, if you are running at Pawsey, *e.g.* on Zeus, submit this other script with Slurm instead:
 > >
 > > ```
-> > $ cd $TUTO/demos
+> > $ cd $TUTO/exercises
 > > $ sbatch ./sbatch_pull_big_images.sh
 > > ```
 > > {: .bash}
@@ -98,10 +98,10 @@ This tutorial assumes Singularity version 3.0 or higher. Version **3.5.0 or high
 
 For these first exercises, we're going to use a plain *Ubuntu* container image.  It's small and quick to download, and will allow use to get to know how containers work by using common Linux commands.  
 
-Within the tutorial directory, let us cd into `demos/singularity`:
+Within the tutorial directory, let us cd into `exercises/singularity`:
 
 ```
-$ cd $TUTO/demos/singularity
+$ cd $TUTO/exercises/singularity
 ```
 {: .bash}
 
@@ -250,7 +250,7 @@ $ singularity shell docker://ubuntu:16.04
 {: .bash}
 
 ```
-Singularity ubuntu_16.04.sif:/home/ubuntu/singularity-containers/demos/singularity>
+Singularity ubuntu_16.04.sif:/home/ubuntu/singularity-containers/exercises/singularity>
 ```
 {: .output}
 

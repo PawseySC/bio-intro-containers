@@ -29,7 +29,7 @@ This example is adapted from this well crafted [Singularity Tutorial](https://gi
 Let us cd into the appropriate directory:
 
 ```
-$ cd $TUTO/demos/lolcow
+$ cd $TUTO/exercises/lolcow
 ```
 {: .bash}
 

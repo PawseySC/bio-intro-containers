@@ -21,7 +21,7 @@ keypoints:
 Let's start and `cd` into the root demo directory:
 
 ```
-$ cd $TUTO/demos
+$ cd $TUTO/exercises
 ```
 {: .bash}
 
@@ -63,7 +63,7 @@ bin  boot  data  dev  environment  etc	home  lib  lib64  media  mnt  opt  proc  
 > {: .bash}
 >
 > ```
-> /home/ubuntu/singularity-containers/demos
+> /home/ubuntu/singularity-containers/exercises
 > ```
 > {: .output}
 >
@@ -77,7 +77,7 @@ bin  boot  data  dev  environment  etc	home  lib  lib64  media  mnt  opt  proc  
 > > {: .bash}
 > >
 > > ```
-> > /home/ubuntu/singularity-containers/demos
+> > /home/ubuntu/singularity-containers/exercises
 > > ```
 > > {: .output}
 > >
@@ -352,10 +352,10 @@ $ singularity pull docker://quay.io/biocontainers/blast:2.9.0--pl526h3066fca_4
 {: .challenge}
 
 
-Now, the demo directory `demos/blast` contains a human prion FASTA sequence, `P04156.fasta`, whereas another directory, `demos/blast_db`, contains a gzipped reference database to blast against, `zebrafish.1.protein.faa.gz`.  Let us `cd` to the latter directory and uncompress the database:
+Now, the demo directory `exercises/blast` contains a human prion FASTA sequence, `P04156.fasta`, whereas another directory, `demos/blast_db`, contains a gzipped reference database to blast against, `zebrafish.1.protein.faa.gz`.  Let us `cd` to the latter directory and uncompress the database:
 
 ```
-$ cd $TUTO/demos/blast_db
+$ cd $TUTO/exercises/blast_db
 $ gunzip zebrafish.1.protein.faa.gz
 ```
 {: .bash}
@@ -380,7 +380,7 @@ $ gunzip zebrafish.1.protein.faa.gz
 > > {: .bash}
 > > ```
 > > Building a new DB, current time: 11/16/2019 19:14:43
-> > New DB name:   /home/ubuntu/singularity-containers/demos/blast_db/zebrafish.1.protein.faa
+> > New DB name:   /home/ubuntu/singularity-containers/exercises/blast_db/zebrafish.1.protein.faa
 > > New DB title:  zebrafish.1.protein.faa
 > > Sequence type: Protein
 > > Keep Linkouts: T
@@ -394,7 +394,7 @@ $ gunzip zebrafish.1.protein.faa.gz
 
 
 After the container has terminated, you should see several new files in the current directory (try `ls`).  
-Now let's proceed to the final alignment step using `blastp`. We need to cd into `demos/blast`:
+Now let's proceed to the final alignment step using `blastp`. We need to cd into `exercises/blast`:
 
 ```
 $ cd ../blast
@@ -407,7 +407,7 @@ $ cd ../blast
 > Adapt the following command to run into the container:
 >
 > ```
-> $ blastp -query P04156.fasta -db $TUTO/demos/blast_db/zebrafish.1.protein.faa -out results.txt
+> $ blastp -query P04156.fasta -db $TUTO/exercises/blast_db/zebrafish.1.protein.faa -out results.txt
 > ```
 > {: .bash}
 >
@@ -416,7 +416,7 @@ $ cd ../blast
 > > ## Solution
 > >
 > > ```
-> > $ singularity exec -B $TUTO/demos/blast_db blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db $TUTO/demos/blast_db/zebrafish.1.protein.faa -out results.txt
+> > $ singularity exec -B $TUTO/exercises/blast_db blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db $TUTO/demos/blast_db/zebrafish.1.protein.faa -out results.txt
 > > ```
 > > {: .bash}
 > {: .solution}
