@@ -1,0 +1,8 @@
+#!/bin/bash
+
+image="$WORK/exercises/pipeline/data/multiqc_1.9--pyh9f0ad1d_0.sif"
+
+cmd="multiqc"
+args="$@"
+
+singularity exec $image $cmd $args

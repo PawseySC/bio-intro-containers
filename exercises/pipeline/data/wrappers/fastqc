@@ -1,0 +1,8 @@
+#!/bin/bash
+
+image="$WORK/exercises/pipeline/data/fastqc_0.11.9--0.sif"
+
+cmd="fastqc"
+args="$@"
+
+singularity exec $image $cmd $args

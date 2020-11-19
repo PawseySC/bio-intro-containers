@@ -1,0 +1,17 @@
+FROM ubuntu:18.04
+
+# Install apt dependencies
+RUN apt-get update
+RUN apt-get -y install \
+      gcc \
+      libbz2-dev \
+      libcurl4-openssl-dev \
+      liblzma-dev \
+      libncurses5-dev \
+      libncursesw5-dev \
+      make \
+      perl \
+      tar \
+      vim \
+      wget \
+      zlib1g-dev
