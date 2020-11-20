@@ -6,7 +6,10 @@ questions:
 objectives:
 - Run a real-world bioinformatics application in a container
 keypoints:
-- Only few steps are required to adapt standard command so they can run from a container
+- Lookup for containers in online image registries
+- Download container images with `singularity pull`
+- Perform a simple test to check the application works, *e.g.* request the help output
+- Run application commands in a container by prepending with `singularity exec <image>` 
 ---
 
 
