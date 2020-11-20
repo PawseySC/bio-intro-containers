@@ -1,7 +1,7 @@
 ---
 title: "Reproducible scientific workflows"
-teaching: 5
-exercises: 10
+teaching: 10
+exercises: 0
 questions:
 objectives:
 - Get an idea of the interplay between containers and workflow engines
@@ -20,36 +20,25 @@ Scientific workflow engines are particularly useful for data-intensive domains i
 Now, let's try and use Singularity and Nextflow to run a demo RNA sequencing pipeline based on [RNAseq-NF](https://github.com/nextflow-io/rnaseq-nf).
 
 
-### Install Nextflow
-
-First, if it's not already on your system, you'll need to install Nextflow.  You'll need to install a Java runtime and download the Nextflow executable.  It will take a few minutes to download all of the required dependencies, but the process is fairly automated.  This is a template install [script]({{ page.root }}/files/install-nextflow.sh) for a Linux box.
-
-If you're running on the Pawsey Nimbus cloud, just run the above script via: `bash $TUTO/files/install-nextflow.sh`.
-
-If you're running at Pawsey *e.g.* on Zeus, all you need is to `module load nextflow`.
-
-
 ### Run a workflow using Singularity and Nextflow
 
 Let's `cd` into the appropriate directory:
 
+```bash
+cd /data/abacbs-containers/exercises/nextflow
 ```
-$ cd $TUTO/exercises/nextflow
-```
-{: .bash}
 
 For convenience, the content of the pipeline [RNAseq-NF](https://github.com/nextflow-io/rnaseq-nf) is already made available in this directory.  There are two critical files in here, namely `main.nf`, that contains the translation of the scientific pipeline in the Nextflow language, and `nextflow.config`, that contains several profiles for running with different software/hardware setups. Here we are going to use the profile called `singularity`.
 
 It's time to launch the pipeline with Nextflow:
 
-```
+```bash
 $ nextflow run main.nf -profile singularity
 ```
-{: .bash}
 
 We'll get some information on the pipeline, along with the notice that the appropriate container is being downloaded:
 
-```
+```output
 N E X T F L O W  ~  version 19.10.0
 Pulling marcodelapierre/rnaseq-nf ...
  downloaded from https://github.com/marcodelapierre/rnaseq-nf.git
@@ -63,11 +52,10 @@ Launching `marcodelapierre/rnaseq-nf` [hopeful_almeida] - revision: 91dd162c00 [
 WARN: Singularity cache directory has not been defined -- Remote image will be stored in the path: /data/work/singularity-test/nxf/work/singularity
 Pulling Singularity image docker://nextflow/rnaseq-nf:latest [cache /data/work/singularity-test/nxf/work/singularity/nextflow-rnaseq-nf-latest.img]
 ```
-{: .output}
 
 It will take a bunch of minutes to download the container image, then the pipeline will run:
 
-```
+```output
 [9e/a8a999] Submitted process > fastqc (FASTQC on ggal_gut)
 [6a/4ec5ee] Submitted process > index (ggal_1_48850000_49020000)
 [91/109c65] Submitted process > quant (ggal_gut)
@@ -76,20 +64,18 @@ It will take a bunch of minutes to download the container image, then the pipeli
 Done! Open the following report in your browser --> results/multiqc_report.html
 
 ```
-{: .output}
 
 The final output of this pipeline is an HTML report of a quality control task, which you might eventually want to download and open up in your browser.  
 
 However, the key question here is: how could the sole flag `-profile singularity` trigger the containerised execution?  This is the relevant snippet from the `nextflow.config` file:
 
-```
+```source
   singularity {
     process.container = 'nextflow/rnaseq-nf:latest'
     singularity.enabled = true
     singularity.autoMounts = true
   }
 ```
-{: .source}
 
 The image name is specified using the `process.container` keyword.  Also, `singularity.autoMounts` is required to have the directory paths with the input files automatically bind mounted in the container.  Finally, `singularity.enabled` triggers the use of Singularity.
 
