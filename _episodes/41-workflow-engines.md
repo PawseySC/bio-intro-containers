@@ -1,5 +1,5 @@
 ---
-title: "Reproducible scientific workflows"
+title: "BONUS: Reproducible scientific workflows"
 teaching: 10
 exercises: 0
 questions:
