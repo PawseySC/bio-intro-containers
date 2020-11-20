@@ -45,9 +45,9 @@ A few examples of how containers are being used at Pawsey include:
 * Bioinformatics workflows
 * Machine Learning 
 * Python apps in radio astronomy
+* OpenFoam simulations
 * RStudio & Jupyter Notebook sessions
 * Webservers
-* OpenFoam simulations
 * Cloud workflows (via Singularity or Docker)
 * HPC workflows (via Singularity)
 
@@ -83,4 +83,4 @@ A number of tools are available to create, deploy and run containerised applicat
 
 * **Enroot**: Nvidia's take on containers, a simple, yet powerful tool to turn traditional container/OS images into unprivileged sandboxes.
 
-* **Podman**: a *root*-less alternative to Docker.  Misses on some features for HPC.
+* **Podman**: a *root*-less alternative to Docker.  Catching up quickly on suitability for HPC.
