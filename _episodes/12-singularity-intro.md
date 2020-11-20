@@ -155,7 +155,7 @@ singularity shell docker://ubuntu:16.04
 ```
 
 ```output
-Singularity ubuntu_16.04.sif:/home/ubuntu/singularity-containers/exercises/singularity>
+Singularity ubuntu_16.04.sif:/data/abacbs-containers/exercises/singularity>
 ```
 
 Remember to type `exit`, or hit `Ctrl-D`, when you're done!
@@ -197,7 +197,7 @@ You can specify the storage location with the `--dir` flag:
 
 ```bash
 mkdir -p sif_lib
-singularity pull --dir ~/path/to/sif/lib docker://library/ubuntu:16.04
+singularity pull --dir sif_lib docker://library/ubuntu:16.04
 ```
 
 Being able to specify download locations allows you to keep the local set of images organised and tidy, by making use of a directory tree.  It also allows for easy sharing of images within your team in a shared resource.  In general, you will need to specify the location of the image upon execution, *e.g.* by defining a dedicated variable:

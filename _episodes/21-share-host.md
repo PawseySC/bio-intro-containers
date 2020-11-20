@@ -54,7 +54,7 @@ pwd
 ```
 
 ```output
-/home/ubuntu/singularity-containers/exercises
+/data/abacbs-containers/exercises
 ```
 
 And now the container:
@@ -63,7 +63,7 @@ singularity exec docker://ubuntu:18.04 pwd
 ```
 
 ```output
-/home/ubuntu/singularity-containers/exercises
+/data/abacbs-containers/exercises
 ```
 
 By default, the container runs from the host working directory!

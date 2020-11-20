@@ -123,7 +123,7 @@ gunzip zebrafish.1.protein.faa.gz
 > > ```
 > > ```output
 > > Building a new DB, current time: 11/16/2019 19:14:43
-> > New DB name:   /home/ubuntu/singularity-containers/exercises/blast_db/zebrafish.1.protein.faa
+> > New DB name:   /data/abacbs-containers/exercises/blast_1/zebrafish.1.protein.faa
 > > New DB title:  zebrafish.1.protein.faa
 > > Sequence type: Protein
 > > Keep Linkouts: T
