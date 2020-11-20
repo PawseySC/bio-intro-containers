@@ -33,7 +33,7 @@ For convenience, the content of the pipeline [RNAseq-NF](https://github.com/next
 It's time to launch the pipeline with Nextflow:
 
 ```bash
-$ nextflow run main.nf -profile singularity
+nextflow run main.nf -profile singularity
 ```
 
 We'll get some information on the pipeline, along with the notice that the appropriate container is being downloaded:

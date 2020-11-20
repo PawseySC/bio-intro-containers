@@ -59,15 +59,14 @@ cd /data/abacbs-containers/exercises/blast_1
 > > ## Solution
 > > 
 > > ```bash
-> > $ singularity pull docker://quay.io/biocontainers/blast:2.9.0--pl526h3066fca_4
+> > singularity pull docker://quay.io/biocontainers/blast:2.9.0--pl526h3066fca_4
 > > ```
 > > 
 > > At the end an image SIF file for BLAST is downloaded:
 > > 
 > > ```bash
-> > $ ls blast*
+> > ls blast*
 > > ```
-> > {: .bash}
 > > 
 > > ```output
 > > blast_2.9.0--pl526h3066fca_4.sif
@@ -174,7 +173,6 @@ Sequences producing significant alignments:                          (Bits)  Val
   NP_001268391.1 chromodomain-helicase-DNA-binding protein 2 [Dan...  35.8    0.072
 [..]
 ```
-{: .output}
 
 When you're done, quit the view by hitting the `q` button.
 

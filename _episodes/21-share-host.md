@@ -28,7 +28,7 @@ What directories can we access from the container?
 First, let us assess what the content of the root directory `/` looks like from outside *vs* inside the container, to highlight the fact that a container runs on his own distinct filesystem.  From the host:
 
 ```bash
-$ ls /
+ls /
 ```
 
 ```output
@@ -38,7 +38,7 @@ bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  s
 And from the container:
 
 ```bash
-$ singularity exec docker://ubuntu:18.04 ls /
+singularity exec docker://ubuntu:18.04 ls /
 ```
 
 ```output
@@ -99,7 +99,7 @@ Host directories that are external to the current directory are not visible!  Ho
 > > ## Solution
 > > 
 > > ```bash
-> > $ singularity exec docker://ubuntu:18.04 touch /example
+> > singularity exec docker://ubuntu:18.04 touch /example
 > > ```
 > > 
 > > ```output
