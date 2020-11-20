@@ -1,7 +1,7 @@
 ---
 title: "Building images with Docker"
 teaching: 15
-exercises: 5
+exercises: 15
 questions:
 objectives:
 - Discuss the pros&cons of building with Singularity vs Docker
@@ -9,13 +9,13 @@ objectives:
 - Build and share an image with Docker
 - Convert a Docker image into the Singularity format
 keypoints:
-- Use `FROM` to specify the build starting image
+- Specify the build starting image with `FROM`
 - Execute shell commands with `RUN`
 - Declare environment variables with `ENV`
-- Build images starting from a `Dockerfile` recipe with `docker build`
-- Push images to a web registry with `docker push`
-- Share images as a single file using `docker save` and `docker load`
-- You can locally convert a Docker image by using `singularity pull docker-daemon:`
+- Build images starting from a `Dockerfile` using `docker build`
+- Push images to a web registry using `docker push`
+- Convert a Docker image by using `singularity pull docker-daemon:`
+- Share Singularity SIF images as any other file
 ---
 
 
@@ -33,7 +33,7 @@ To better inform an answer to this question, here are some of the advantages whe
 
 #### Docker
 * Compatibility: image format can be run by all existing container engines, including Singularity;
-* Layered image format allows caching, for reduced build time during prototyping and development.
+* Layered image format allows caching, for reduced build time during prototyping and development (however shipping these images requires more effort).
 
 Note how, at present, both tools require root privileges for building, implying that this step cannot be performed on HPC, and requires a dedicated machine instead.
 
@@ -41,143 +41,110 @@ Although Singularity builds offer some interesting advantages, there's a single 
 It's **compatibility**.  Build with Docker, and you'll know the resulting image can be run from every container engine anywhere in the world.
 
 
-### Container image formats
+### Building a container image with Docker
 
-One of the differences between Docker and Singularity is the adopted format to store container images.
+This example is adapted from this well crafted [Singularity Tutorial](https://github.com/ArangoGutierrez/Singularity-tutorial).  
 
-Docker adopts a layered format compliant with the *Open Containers Initiative* (OCI).  Each build command in the recipe file results in the creation of a distinct image layer.  These layers are cached during the build process, making them quite useful for development.  In fact, repeated build attempts that make use of the same layers will exploit the cache, thus reducing the overall build time.  On the other hand, shipping a container image is not straightforward, and requires either relying on a public registry, or compressing the image in a *tar* archive.
+Let's `cd` into the relevant demo directory:
 
-Since version 3.0, Singularity has developed the *Singularity Image Format* (SIF), a single file layout for container images, with extension `.sif`.  Among the benefits, an image is simply a very large file, and thus can be transferred and shipped as any other file.  Building on this single file format, a number of features have been developed, such as image signing and verification, and (more recently) image encryption.  A drawback of this approach is that during build time a progressive, incremental approach is not possible.
-
-Note that Singularity versions prior to 3.0 used different image formats, characterised by the extensions `.simg` or `.sqsh`.  You can still find these around in the web; newer Singularity versions are still able to run them.
-
-
-### Building the container image with Docker
-
-Let's cd into the relevant demo directory:
-
+```bash
+cd /data/abacbs-containers/exercises/lolcow_docker
 ```
-$ cd $TUTO/exercises/lolcow_docker
-```
-{: .bash}
 
 Let us also start building the image with `docker build` straight away.  Meanwhile, we'll bring the discussion on.
 
+```bash
+sudo docker build -t lolcow:21Nov20 .
 ```
-$ sudo docker build -t lolcow:1Nov19 .
-```
-{: .bash}
 
-In the command above, `.` is the location of the build context (*i.e.* the directory for the Dockerfile).  
-The `-t` flag is used to specify the image name (compulsory) and tag (optional).
+First, note that we're typing `sudo`, because Docker needs to be executed with administrative privileges.  If your Linux user belongs to the "docker" group (this is the case in the machines for this tutorial), you can skip typing `sudo`, however the execution will still be privileged.
 
-Any lowercase alphanumeric string can be used as image name; here we've used `lolcow`.  The image tag (following the colon) can be optionally used to maintain a set of different image versions on Docker Hub, and is a key feature in enabling reproducibility of your computations through containers; here we've used `1Nov19`.
+At the end of the line, `.` is the location of the build context (*i.e.* the directory for the Dockerfile).  
 
-Adding the prefix `<Your Docker Hub account>/` to the image name is also optional and allows to push the built image to your Docker Hub registry (see below). 
+The `-t` flag is used to specify the image name (compulsory) and tag (optional).  
+Any lowercase alphanumeric string can be used as image name; here we've used `lolcow`.  The image tag (following the colon) can be optionally used to maintain a set of different image versions on Docker Hub, and is a key feature in enabling reproducibility of your computations through containers; here we've used `21Nov20`.
 
-The complete format for the image name looks like: `<Your Docker Hub account ^>/<Image name>:<Image tag ^>`. `^`These are optional.
+If you have a Docker Hub account, Adding the prefix `<Your account>/` to the image name allows to push the built image to your Docker Hub registry for sharing (see below).  
+Then, the complete format for the image name looks like: `<Your Docker Hub account ^>/<Image name>:<Image tag ^>`. `^`These are optional.
 
 This is the output of our build:
 
-```
+```output
 Sending build context to Docker daemon  2.048kB
-Step 1/7 : FROM ubuntu:18.04
- ---> 775349758637
-Step 2/7 : LABEL maintainer="Pawsey Supercomputing Centre"
- ---> Running in 91c109dfd5ba
-Removing intermediate container 91c109dfd5ba
- ---> 361490204a2c
-Step 3/7 : RUN apt-get -y update &&   apt-get -y install fortune cowsay lolcat
- ---> Running in 4543b6bb99f1
+Step 1/6 : FROM ubuntu:18.04
+ ---> 2eb2d388e1a2
+Step 2/6 : LABEL maintainer="Pawsey Supercomputing Centre"
+ ---> Running in 6b3a2ca5a738
+Removing intermediate container 6b3a2ca5a738
+ ---> 8b97ddfd477c
+Step 3/6 : LABEL version="v0.0.1"
+ ---> Running in cc349d1718b6
+Removing intermediate container cc349d1718b6
+ ---> b7d793a1c012
+Step 4/6 : RUN apt-get -y update &&   apt-get -y install fortune cowsay lolcat
 
 [..]
 
-Removing intermediate container 4543b6bb99f1
- ---> 7958a569068f
-Step 4/7 : ENV PATH=/usr/games:$PATH
- ---> Running in 86282799c41f
-Removing intermediate container 86282799c41f
- ---> 3ffdfe179e34
-Step 5/7 : VOLUME /data
- ---> Running in f93de5446caa
-Removing intermediate container f93de5446caa
- ---> 9c174e36bf3a
-Step 6/7 : WORKDIR /data
- ---> Running in eed67d591239
-Removing intermediate container eed67d591239
- ---> 36cc09b2c59b
-Step 7/7 : CMD fortune | cowsay | lolcat
- ---> Running in 87a464d2ee67
-Removing intermediate container 87a464d2ee67
- ---> 3c62a0f2e06e
-Successfully built 3c62a0f2e06e
-Successfully tagged lolcow:1Nov19
+Removing intermediate container 69028dcddc81
+ ---> c61504ed1b78
+Step 5/6 : ENV PATH=/usr/games:$PATH
+ ---> Running in 1108c6ca6db4
+Removing intermediate container 1108c6ca6db4
+ ---> c8032059066d
+Step 6/6 : CMD fortune | cowsay | lolcat
+ ---> Running in c19994af1c27
+Removing intermediate container c19994af1c27
+ ---> 4d20bd8fcf3b
+Successfully built 4d20bd8fcf3b
+Successfully tagged lolcow:21Nov20
 ```
-{: .output}
 
 
 ### A Dockerfile recipe
 
-The image we are building is very similar to the one we built with Singularity.  Let's have a look at its `Dockerfile` recipe file in the demo directory:
+Now let's have a look at the `Dockerfile` recipe for this image:
 
+```bash
+cat Dockerfile
 ```
-FROM ubuntu:18.04
 
+```source
+FROM ubuntu:18.04
+  
 LABEL maintainer="Pawsey Supercomputing Centre"
+LABEL version="v0.0.1"
 
 RUN apt-get -y update && \
   apt-get -y install fortune cowsay lolcat
 
 ENV PATH=/usr/games:$PATH
 
-VOLUME /data
-WORKDIR /data
-
 CMD fortune | cowsay | lolcat
 ```
-{: .source}
 
 The directory where the the Dockerfile is stored is the so called the Docker **build context**.  Docker will include files in this directory in the build process and in the final image.  As a by-product, this will make the build process longer and the image larger, so that we want to include only those strictly required for the build, even none if possible.
 
 Let's comment on the Docker instructions that appear in this Dockerfile.
 
-* `FROM`: compulsory, it provides the starting image we will use to build our customised one;
-* `LABEL`: used to add metadata information to the image, *e.g.* the maintainer, optional;
-* `RUN`: this is the most used instruction, that allows to run most shell commands during the build.  Multiple `RUN` instructions are often found in a single Dockerfile;
-* `ENV`: set environment variables that will persist at runtime in the container; **DO NOT** use `RUN export <..>` to this end, as the variable will be lost after the `RUN` step is completed;
-* `VOLUME`: creates a mount point ready to be used for mounting external (*e.g.* host) volumes; creates the corresponding directory if not existing;
-* `WORKDIR`: changes directory to the specified path; the last current directory in the build will be the working directory in the running container.  
-  **Note**: if you use instead `RUN cd <..>`, the changed directory will only persist within that `RUN` instruction, and then be lost in subsequent build steps;
-* `CMD`: specifies the default command to be executed with the container, in case no other command is provided.
+The first line in the Dockerfile is `FROM ubuntu:18.04`.  This tells Docker which base image to use to perform the build.
+
+Lines starting with the instruction `RUN` are the most important.  These are the sequence of commands to be executed to install packages in the image, in essence the same commands you would use for installation in a Linux box.  Here we are ensuring we have an up-to-date list of packages, and then we are installing three Linux utilities.
+
+The instruction `ENV` allows to set up environment variables that need to be defined at runtime rather than at build time.  Here the `PATH` needs to be updated to reflect the location of the three utilities that we installed with the `RUN` instructions.  **DO NOT** use `RUN export <..>` to this end, as the variable will be lost after the `RUN` step is completed.
+
+The `LABEL` instruction is optionally used to add metadata to the container image.  
+
+The final instruction, `CMD`, specifies the default command to be executed with the container, in case no other command is provided.  The most typical choice is the shell, `/bin/bash`, as specific commands are typically provided as arguments to the container execution line; here we're using a different command just to show something fancy later on.
+
+Although we are not using them in this Dockerfile, other useful instructions are `ADD` or `COPY`, like in: 
+
+```source
+ADD <src-file> <dst-file>
+```
+
+These are used to copy files from the host, *i.e.* <src-file>, inside the container in the destination <dst-file>.
 
 More information on the Dockerfile syntax can be found at the [Dockerfile reference](https://docs.docker.com/engine/reference/builder/).
-
-
-### Layers in a Docker image
-
-Note how the `RUN` instruction above is used to execute a sequence of commands to update the list of available packages and install a set of Linux packages.  
-We have concatenated all these commands in one using the `&&` linux operator, and then the `\` symbol to break them into multiple lines for readability.
-
-We could have used one `RUN` instruction per command, so why concatenating instead?  
-Well, each `RUN` creates a distinct **layer** in the final image, increasing its size.  It is a good practice to use as few layers, and thus `RUN` instructions, as possible, to keep the image size smaller.
-
-
-> ## Syntax of recipe files: Singularity *vs* Docker
-> 
-> | Task            | Singularity          | Docker              |
-> | :-------------- | :------------------: | :-----------------: |
-> |                 | *Section*            | *Directive*         |
-> | :-------------- | :------------------: | :-----------------: |
-> | Starting image  | `Bootstrap` + `From` | `FROM`              |
-> | Linux commands  | `%post`              | `RUN`               |
-> | Shell variables | `%environment`       | `ENV`               |
-> | Copying files   | `%files`             | `COPY`, `ADD`       |
-> | Metadata        | `%labels`, `%help`   | `LABEL`             |
-> | Default command | `%runscript`         | `CMD, ENTRYPOINT`   |
-> | Long running    | `%startscript`       | Not required        |
-> | Work directory  | Not required         | `WORKDIR`           |
-> | Mount points    | Not required         | `VOLUME`            |
-{: .callout}
 
 
 ### List local Docker images
@@ -185,121 +152,76 @@ Well, each `RUN` creates a distinct **layer** in the final image, increasing its
 We know that Docker container images are not single files, but rather adopt a multi-layered format.  To keep things tidy, Docker stores images and their layers in a hidden directory, under its own control.  
 To get the list of available images, including the ones you built, use `docker images`:
 
+```bash
+sudo docker images
 ```
-$ sudo docker images
+
+```output
+REPOSITORY                          TAG                                IMAGE ID            CREATED             SIZE
+lolcow                              21Nov20                            4d20bd8fcf3b        11 minutes ago      181MB
 ```
-{: .bash}
 
+
+> ### Bonus: What if you need to debug the build process?
+> 
+> Quite often devising a recipe to install software involves a certain deal of trial and error.  
+> 
+> If you need to inspect a Docker container during build, you can open an interactive shell session this way:
+> 
+> ```bash
+> sudo docker run --rm -it ubuntu:18.04 bash
+> ```
+> 
+> ```output
+> root@dd1ca993f4ad:/#
+> ```
+> 
+> Here, `-it` keeps the container standard input open and allocates a terminal; `--rm` does some clean up when closing the session.  
+> 
+> Note that Docker containers, unlike Singularity containers, are writable.  So during an interactive sessions you can even trial software installations.  However, edits are ephemeral, *i.e.* you lose them when you close the container.
+> 
+> When you're done, type `exit`, or hit `Ctrl-D`, to leave the interactive shell.
+{: .callout}
+
+
+### Converting and running the image with Singularity
+
+We've created a container image using Docker.  Now, how can we use it with Singularity?  
+As seen in a previous episode, the Singularity `pull` command can take care of converting a Docker image for its own usage.
+
+If your Docker-equipped machine also comes with Singularity, you can grab the image from the local image repo, using the `docker-daemon:` prefix, and convert it into the SIF format.  Note that, due to a current bug in Singularity, you will need to ditch the double slashes `//`:
+
+```bash
+singularity pull docker-daemon:lolcow:21Nov20
 ```
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-lolcow              1Nov19              a67808f049be        5 hours ago         170MB
+
+Does it work?  Let's try the command `fortune`:
+
+```bash
+singularity exec lolcow_21Nov20.sif fortune
 ```
-{: .output}
 
-
-### What if you need to debug the build process?
-
-Quite often devising a recipe to install software involves a certain deal of trial and error.  
-
-If you need to inspect a Docker container during build, you can open an interactive shell session this way:
-
+```output
+Whenever you find that you are on the side of the majority, it is time
+to reform.
+		-- Mark Twain
 ```
-$ sudo docker run --rm -it ubuntu:18.04 bash
+
+Now, try and run this pipe of commands: `bash -c 'fortune | cowsay | lolcat'`.
+
+```bash
+singularity exec lolcow_21Nov20.sif bash -c 'fortune | cowsay | lolcat'
 ```
-{: .bash}
 
-```
-root@dd1ca993f4ad:/#
-```
-{: .output}
+You will get something similar to this, hopefully just more colourful:
 
-Here, `-it` keeps the container standard input open and allocates a terminal; `--rm` does some clean up when closing the session.  
-
-Note that Docker containers, unlike Singularity containers, are writable.  So during an interactive sessions you can even trial software installations.  However, edits are ephemeral, *i.e.* you lose them when you close the container.
-
-When you're done, type `exit`, or hit `Ctrl-D`, to leave the interactive shell.
-
-
-### Pushing the image to Docker Hub
-
-If you have a (free) Docker Hub account you must first login to Docker.
-
-```
-$ sudo docker login
-```
-{: .bash}
-
-You are now ready to push your newly created image to the Docker Hub web registry.
-
-First, let us create a second tag for the image, that includes your Docker Account.  To this end we'll use `docker tag`:
-
-```
-$ sudo docker tag lolcow:1Nov19 <your-dockerhub-account>/lolcow:1Nov19
-```
-{: .bash}
-
-Now we can push the image:
-
-```
-$ sudo docker push <your-dockerhub-account>/lolcow:1Nov19
-```
-{: .bash}
-
-```
-The push refers to repository [docker.io/marcodelapierre/lolcow]
-9d2959e72647: Pushed 
-317d47a452af: Pushed 
-e0b3afb09dc3: Mounted from library/ubuntu 
-6c01b5a53aac: Mounted from library/ubuntu 
-2c6ac8e5063e: Mounted from library/ubuntu 
-cc967c529ced: Mounted from library/ubuntu 
-1Nov19: digest: sha256:295c5695e2b05f6123bc2d8669ec7b66e45df5000ab9fc45ce3566ae3c0d839e size: 1571
-```
-{: .output}
-
-Your image is now publicly available for anyone to pull.
-
-
-### Sharing the Docker image as a single file
-
-If you don't want to use an online registry to share your images, Docker allows you to convert them to a compressed `tar.gz` archive, which you can then share as any other large file, *e.g.* using `scp`, `rsync`, and other file transfer tools.  
-For instance, this can be useful when needing to transfer or share images including proprietary software, amongst collaborators that own the appropriate license.
-
-Use `docker save` to create the archive:
-
-```
-$ sudo docker save -o lolcow_1Nov19.tar.gz lolcow:1Nov19
-```
-{: .bash}
-
-After the transfer, use `docker load` to extract the image in a format that is usable by Docker:
-
-```
-$ sudo docker load -i lolcow_1Nov19.tar.gz
-```
-{: .bash}
-
-```
-Loaded image: lolcow:1Nov19
-```
-{: .output}
-
-**Note**: you need Docker to extract the image from the compressed archive, Singularity can't do it.
-
-
-### Running the image with Docker
-
-Let's give this image a go! Let's execute it without any argument to use the default command:
-
-```
-$ sudo docker run --rm lolcow:1Nov19
-```
-{: .bash}
-
-```
+```output
  _______________________________________
-/ Good news. Ten weeks from Friday will \
-\ be a pretty good day.                 /
+/ Have a place for everything and keep  \
+| the thing somewhere else; this is not |
+| advice, it is merely custom.          |
+|                                       |
+\ -- Mark Twain                         /
  ---------------------------------------
         \   ^__^
          \  (oo)\_______
@@ -307,48 +229,16 @@ $ sudo docker run --rm lolcow:1Nov19
                 ||----w |
                 ||     ||
 ```
-{: .output}
 
-Note how the default command can be readily overwritten:
+Hey, we've just containerised a cow that cites novelists!  
 
+And just as a little trick, because we used that weird `CMD` definition in the Dockerfile, we can make the cow talk also via:
+
+```bash
+./lolcow_21Nov.sif
 ```
-$ sudo docker run --rm lolcow:1Nov19 echo "Hello World!"
-```
-{: .bash}
 
-```
-Hello World!
-```
-{: .output}
-
-
-### Converting and running the image with Singularity
-
-We've created a container image using Docker.  Now, what steps are required to use it with Singularity?  
-As seen in a previous episode, the Singularity `pull` command can take care of converting a Docker image for its own usage.
-
-If you have pushed the image to Docker Hub, just execute:
-
-```
-$ singularity pull docker://<your-dockerhub-account>/lolcow:1Nov19
-```
-{: .bash}
-
-If your Docker-equipped machine also comes with Singularity, you can also grab the image from the local image repo, using the `docker-daemon:` prefix.  Due to a current bug in Singularity, you will need to ditch the double slashes `//`:
-
-```
-$ singularity pull docker-daemon:lolcow:1Nov19
-```
-{: .bash}
-
-Does it work?
-
-```
-$ ./lolcow_1Nov19.sif
-```
-{: .bash}
-
-```
+```output
  ________________________________________
 / Don't go surfing in South Dakota for a \
 \ while.                                 /
@@ -359,163 +249,72 @@ $ ./lolcow_1Nov19.sif
                 ||----w |
                 ||     ||
 ```
-{: .output}
-
-Sure it does!
 
 
-### Bonus: example Dockerfiles
+### Sharing the Docker image using Docker Hub
 
-Have a look at these, just to get a taste of what a production Dockerfile might look like.
+If you have a (free) Docker Hub account you can use it to share your image in Docker format. 
 
+First you must login to Docker:
 
-> ## Pawsey MPI-base image
-> 
-> > ## Dockerfile
-> >
-> > ```
-> > FROM ubuntu:18.04
-> > 
-> > LABEL maintainer="brian.skjerven@pawsey.org.au"
-> > 
-> > # Install package dependencies
-> > RUN apt-get update -qq \
-> >       && apt-get -y --no-install-recommends install \
-> >          build-essential \
-> >          gdb \
-> >          gfortran \
-> >          wget \
-> >       && apt-get clean all \
-> >       && rm -r /var/lib/apt/lists/*
-> > 
-> > 
-> > ### Build MPICH ###
-> > 
-> > ARG MPICH_VERSION="3.1.4"
-> > ARG MPICH_CONFIGURE_OPTIONS="--enable-fast=all,O3 --prefix=/usr"
-> > ARG MPICH_MAKE_OPTIONS="-j4"
-> > 
-> > WORKDIR /tmp/mpich-build
-> > 
-> > RUN wget http://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz \
-> >       && tar xvzf mpich-${MPICH_VERSION}.tar.gz \
-> >       && cd mpich-${MPICH_VERSION}  \
-> >       && ./configure ${MPICH_CONFIGURE_OPTIONS} \
-> >       && make ${MPICH_MAKE_OPTIONS} \
-> >       && make install \
-> >       && ldconfig
-> > 
-> > 
-> > ### Build OSU Benchmarks ###
-> > 
-> > ARG OSU_BENCH_VERSION="5.4.2"
-> > ARG OSU_BENCH_CONFIGURE_OPTIONS="--prefix=/usr/local CC=mpicc CXX=mpicxx CFLAGS=-O3"
-> > ARG OSU_BENCH_MAKE_OPTIONS="-j4"
-> > 
-> > WORKDIR /tmp/osu-benchmark-build
-> > 
-> > RUN wget http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_BENCH_VERSION}.tar.gz \
-> >       && tar xzvf osu-micro-benchmarks-${OSU_BENCH_VERSION}.tar.gz \
-> >       && cd osu-micro-benchmarks-${OSU_BENCH_VERSION} \
-> >       && ./configure ${OSU_BENCH_CONFIGURE_OPTIONS} \
-> >       && make ${OSU_BENCH_MAKE_OPTIONS} \
-> >       && make install
-> > 
-> > WORKDIR /
-> > RUN rm -rf /tmp/*
-> > CMD ["/bin/bash"]
-> > ```
-> > {: .source}
-> {: .solution}
-{: .challenge}
+```bash
+sudo docker login
+```
+
+Then, create a second tag for the image, that includes your Docker Account.  To this end we need to use `docker tag`:
+
+```bash
+sudo docker tag lolcow:21Nov20 <your-dockerhub-account>/lolcow:21Nov20
+```
+
+Finally, we can push the image to the Docker Hub web registry:
+
+```bash
+sudo docker push <your-dockerhub-account>/lolcow:21Nov20
+```
+
+```output
+The push refers to repository [docker.io/marcodelapierre/lolcow]
+9d2959e72647: Pushed 
+317d47a452af: Pushed 
+e0b3afb09dc3: Mounted from library/ubuntu 
+6c01b5a53aac: Mounted from library/ubuntu 
+2c6ac8e5063e: Mounted from library/ubuntu 
+cc967c529ced: Mounted from library/ubuntu 
+21Nov20: digest: sha256:295c5695e2b05f6123bc2d8669ec7b66e45df5000ab9fc45ce3566ae3c0d839e size: 1571
+```
+
+Your image is now publicly available for anyone to pull, including using Singularity.
 
 
-> ## A simple Python image
-> 
-> > ## Dockerfile
-> >
-> > ```
-> > FROM continuumio/miniconda3:4.5.11
-> > 
-> > LABEL maintainer="marco.delapierre@pawsey.org.au"
-> > 
-> > RUN apt-get clean all && \
-> >     apt-get update && \
-> >     apt-get upgrade -y && \
-> >     apt-get install -y \
-> >         vim && \
-> >     conda update -y conda \
-> >     && apt-get clean all && \
-> >     apt-get purge && \
-> >     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-> > 
-> > ARG atlas_version="2.0.1"
-> > RUN conda install -y -c bioconda -c conda-forge metagenome-atlas="$atlas_version"
-> > 
-> > RUN mkdir /databases && \
-> >     chmod go+w /databases
-> > 
-> > RUN mkdir /home/none && \
-> >     mkdir /home/none/.cache && \
-> >     cp -p $HOME/.bashrc $HOME/.profile /home/none/ && \
-> >     chmod -R go+w /home/none
-> > ENV HOME="/home/none"
-> > VOLUME /data
-> > WORKDIR /data
-> > ```
-> > {: .source}
-> {: .solution}
-{: .challenge}
+### Sharing the Singularity SIF file
+
+An image in Singularity SIF format is just a file, so... you can transfer it across systems using Linux command line utilities like `scp` or `rsync`, or even graphical applications such as `Filezilla`.  
+Just remember that images can be quite large, typically ranging from tens of MBs up to several GBs.  The *lolcow* image we created is about 70 MB, but for instance a typical *RStudio* image is well above 1 GB.
+
+If you want to keep the images publicly available for the wider community, the most compatible way is to use the Docker image format as described above (`docker push` to Docker Hub).
 
 
-> ## A large R image
-> 
-> > ## Dockerfile
-> >
-> > ```
-> > FROM rocker/tidyverse:latest
-> > 
-> > RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-> >       autoconf \
-> >       automake \
-> >       g++ \
-> >       gcc \
-> >       gfortran \
-> >       make \
-> >       && apt-get clean all \
-> >       && rm -rf /var/lib/apt/lists/*
-> > 
-> > RUN mkdir -p $HOME/.R
-> > COPY Makevars /root/.R/Makevars
-> > 
-> > RUN Rscript -e "library('devtools')" \
-> >       -e "install_github('Rdatatable/data.table', build_vignettes=FALSE)" \
-> >       -e "install.packages('reshape2')" \
-> >       -e "install.packages('fields')" \
-> >       -e "install.packages('ggbeeswarm')" \
-> >       -e "install.packages('gridExtra')" \
-> >       -e "install.packages('dynamicTreeCut')" \
-> >       -e "install.packages('DEoptimR')" \
-> >       -e "install.packages('http://cran.r-project.org/src/contrib/Archive/robustbase/robustbase_0.90-2.tar.gz', repos=NULL, type='source')" \
-> >       -e "install.packages('dendextend')" \
-> >       -e "install.packages('RColorBrewer')" \
-> >       -e "install.packages('locfit')" \
-> >       -e "install.packages('KernSmooth')" \
-> >       -e "install.packages('BiocManager')" \
-> >       -e "source('http://bioconductor.org/biocLite.R')" \
-> >       -e "biocLite('Biobase')" \
-> >       -e "biocLite('BioGenerics')" \
-> >       -e "biocLite('BiocParallel')" \
-> >       -e "biocLite('SingleCellExperiment')" \
-> >       -e "biocLite('GenomeInfoDb')" \
-> >       -e "biocLite('GenomeInfgoDbData')" \
-> >       -e "biocLite('DESeq')" \
-> >       -e "biocLite('DESeq2')" \
-> >       -e "BiocManager::install(c('scater', 'scran'))" \
-> >       -e "library('devtools')" \
-> >       -e "install_github('IMB-Computational-Genomics-Lab/ascend', ref = 'devel')" \
-> >       && rm -rf /tmp/downloaded_packages
-> > ```
-> > {: .source}
-> {: .solution}
-{: .challenge}
+
+### Useful base images
+
+At the time of writing, [Docker Hub](https://hub.docker.com) is the most popular web registry for general purpose container images.  Therefore all images mentioned below are hosted in this registry.
+
+#### R
+The [Rocker Project](https://www.rocker-project.org) maintains a number of good R base images.  Of particular relevance is [rocker/tidyverse](https://hub.docker.com/r/rocker/tidyverse), which embeds the basic R distribution, an RStudio web-server installation and the [tidyverse](https://www.tidyverse.org) collection of packages for data science.
+
+Other more basic images are [rocker/r-ver](https://hub.docker.com/r/rocker/r-ver) (R only) and [rocker/rstudio](https://hub.docker.com/r/rocker/rstudio) (R + RStudio).
+
+#### Python
+[python](https://hub.docker.com/_/python) hosts the official Python images.  Different versions are available for some OS flavours.  Smaller base images have tags ending with `-slim`.
+
+[continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3) are images provided by the maintainers of the [Anaconda](https://anaconda.org) project.  They ship with Python 3, as well as `pip` and `conda` to install and manage packages.
+
+If you need interactive Jupyter Notebooks, [Jupyter Docker Stacks](https://jupyter-docker-stacks.readthedocs.io/en/latest/) maintain a series of dedicated container images.  Among others, there is the base SciPy image [jupyter/scipy-notebook](https://hub.docker.com/r/jupyter/scipy-notebook), the data science image [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook), and the machine learning image [jupyter/tensorflow-notebook](https://hub.docker.com/r/jupyter/tensorflow-notebook).
+
+#### CUDA
+[nvidia/cuda](https://hub.docker.com/r/nvidia/cuda) has images to build GPU enabled applications.  There are different image types for different needs.  Tags containing `runtime` are suitable for binary applications that are ready to run; if you need to compile GPU code, pick tags containing `devel` instead.  Different OS flavours are available, too.
+
+#### MPI
+As you can see in the episode on MPI applications, when containerising this type of software the MPI libraries in the image need to be ABI compatible with the MPI libraries in the host.  The Pawsey Supercomputing Centre maintains some dedicated base images at [pawsey/mpich-base](https://hub.docker.com/r/pawsey/mpich-base), for building images that will run on our HPC systems.
+
