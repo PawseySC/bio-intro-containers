@@ -49,6 +49,8 @@ cd /data/abacbs-containers/exercises/blast_1
 > As we don't continuously update the content of this tutorial, please use the following image for the rest of this BLAST example:
 > 
 > `quay.io/biocontainers/blast:2.9.0--pl526h3066fca_4`
+>
+> We've pre-cached this image in the virtual machine for this tutorial, so the following pull process should only take a few seconds.
 {: .callout}
 
 
