@@ -7,7 +7,7 @@ objectives:
 - Re-run containerised BLAST with a custom database location
 - Execute a RNA sequencing pipeline in a container
 keypoints:
-- Bind mount additional directories in the container with the flag `-B`, or the variable SINGULARITY_BINDPATH
+- Bind mount additional directories in the container with the flag `-B`, or the variable `SINGULARITY_BINDPATH`
 - Containerise an entire pipeline by making use of `singularity exec <image>` and few other markups
 ---
 
@@ -87,7 +87,7 @@ cd ../blast_2
 > Adapt the following command to run into the container:
 >
 > ```bash
-> $ blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > ```
 >
 > Remember that you will need to bind mount the directory containing the database using appropriate Singularity syntax.
@@ -95,7 +95,7 @@ cd ../blast_2
 > > ## Solution 1
 > >
 > > ```bash
-> > $ singularity exec -B ../database_blast blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> > singularity exec -B ../database_blast blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > > ```
 > {: .solution}
 >
@@ -103,7 +103,7 @@ cd ../blast_2
 > >
 > > ```bash
 > > export SINGULARITY_BINDPATH="../database_blast"
-> > $ singularity exec blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> > singularity exec blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > > ```
 > {: .solution}
 > 
@@ -273,7 +273,7 @@ Now it's the time to edit the pipeline script and make it work with containers!
 Make a copy of the original pipeline to work with:
 
 ```bash
-$ cp original_pipe.sh pipe.1.sh
+cp original_pipe.sh pipe.1.sh
 ```
 
 You will need to modify ONLY FOUR LINES of this file, namely the ones marked with the comment `# ONLY CHANGE THE NEXT LINE - EXECUTION LINE`.  Do not change anything else, nor move files around in the directory structure.  

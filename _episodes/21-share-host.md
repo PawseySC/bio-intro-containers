@@ -8,11 +8,11 @@ objectives:
 - Pass specific variables to the container
 keypoints:
 - By default Singularity mounts the host current directory, and uses it as the container working directory
-- Map additional host directories in the containers with the flag `-B`, or the variable SINGULARITY_BINDPATH
+- Map additional host directories in the containers with the flag `-B`, or the variable `SINGULARITY_BINDPATH`
 - Avoid mounting the `$HOME` directory, to better protect your sensitive data in the host
 - By default Singularity passes all host variables to the container
 - If you need to, isolate the container shell environment with the flag `-e`
-- Pass specific shell variables to containers by prefixing them with SINGULARITYENV_
+- Pass specific shell variables to containers by prefixing them with `SINGULARITYENV_`
 ---
 
 
