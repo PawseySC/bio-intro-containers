@@ -85,7 +85,7 @@ However, how about other directories in the host?  For instance, let us inspect 
 singularity exec docker://ubuntu:18.04 ls ../_episodes
 ```
 
-```output
+```error
 ls: cannot access '../_episodes': No such file or directory
 ```
 
@@ -102,7 +102,7 @@ Host directories that are external to the current directory are not visible!  Ho
 > > singularity exec docker://ubuntu:18.04 touch /example
 > > ```
 > > 
-> > ```output
+> > ```error
 > > touch: cannot touch '/example': Read-only file system
 > > ```
 > > 

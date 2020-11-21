@@ -84,18 +84,31 @@ cd ../blast_2
 
 > ## Now run the alignment
 >
-> Adapt the following command to run into the container:
+> This is the alignment command:
 >
 > ```bash
 > blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > ```
 >
-> Remember that you will need to bind mount the directory containing the database using appropriate Singularity syntax.
+> If you run it as you did in the previously exercise, you will get a file not found error:
+>
+> > ## Error
+> >
+> > ```bash
+> > singularity exec $blast_image blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> > ```
+> >
+> > ```error
+> > BLAST Database error: No alias or index file found for protein database [../database_blast/zebrafish.1.protein.faa] in search path [/data/work/gitrepos/Trainings/abacbs-containers/exercises/blast_2::]
+> > ```
+> {: .solution}
+>
+> Then, try and run the alignment command from the container, while also bind mounting the directory containing the database using appropriate Singularity syntax.
 >
 > > ## Solution 1
 > >
 > > ```bash
-> > singularity exec -B ../database_blast blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> > singularity exec -B ../database_blast $blast_image blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > > ```
 > {: .solution}
 >
@@ -103,7 +116,7 @@ cd ../blast_2
 > >
 > > ```bash
 > > export SINGULARITY_BINDPATH="../database_blast"
-> > singularity exec blast_2.9.0--pl526h3066fca_4.sif blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
+> > singularity exec $blast_image blastp -query P04156.fasta -db ../database_blast/zebrafish.1.protein.faa -out results.txt
 > > ```
 > {: .solution}
 > 
