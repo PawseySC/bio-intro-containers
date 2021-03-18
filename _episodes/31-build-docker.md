@@ -48,7 +48,7 @@ This example is adapted from this well crafted [Singularity Tutorial](https://gi
 Let's `cd` into the relevant demo directory:
 
 ```bash
-cd /data/abacbs-containers/exercises/lolcow_docker
+cd /data/bio-intro-containers/exercises/lolcow_docker
 ```
 
 Let us also start building the image with `docker build` straight away.  Meanwhile, we'll bring the discussion on.

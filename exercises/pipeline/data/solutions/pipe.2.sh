@@ -1,8 +1,8 @@
 #!/bin/bash
 
-salmon_image="/data/abacbs-containers/exercises/pipeline/data/salmon_1.2.1--hf69c8f4_0.sif"
-fastqc_image="/data/abacbs-containers/exercises/pipeline/data/fastqc_0.11.9--0.sif"
-multiqc_image="/data/abacbs-containers/exercises/pipeline/data/multiqc_1.9--pyh9f0ad1d_0.sif"
+salmon_image="/data/bio-intro-containers/exercises/pipeline/data/salmon_1.2.1--hf69c8f4_0.sif"
+fastqc_image="/data/bio-intro-containers/exercises/pipeline/data/fastqc_0.11.9--0.sif"
+multiqc_image="/data/bio-intro-containers/exercises/pipeline/data/multiqc_1.9--pyh9f0ad1d_0.sif"
 
 export SINGULARITY_BINDPATH="/data"
 

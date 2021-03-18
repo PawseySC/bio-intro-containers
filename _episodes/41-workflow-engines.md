@@ -25,7 +25,7 @@ Now, let's try and use Singularity and Nextflow to run a demo RNA sequencing pip
 Let's `cd` into the appropriate directory:
 
 ```bash
-cd /data/abacbs-containers/exercises/nextflow
+cd /data/bio-intro-containers/exercises/nextflow
 ```
 
 For convenience, the content of the pipeline [RNAseq-NF](https://github.com/nextflow-io/rnaseq-nf) is already made available in this directory.  There are two critical files in here, namely `main.nf`, that contains the translation of the scientific pipeline in the Nextflow language, and `nextflow.config`, that contains several profiles for running with different software/hardware setups. Here we are going to use the profile called `singularity`.

@@ -19,7 +19,7 @@ In this first exercise, you're going to repeat some of the steps of the previous
 Start with `cd`ing into the exercise directory, containing the sequence to be BLASTED:
 
 ```bash
-cd /data/abacbs-containers/exercises/blast_2
+cd /data/bio-intro-containers/exercises/blast_2
 ls *.fasta
 ```
 
@@ -27,7 +27,7 @@ ls *.fasta
 P04156.fasta
 ```
 
-Note that the reference database is in a distinct path, `/data/abacbs-containers/exercises/database_blast`:
+Note that the reference database is in a distinct path, `/data/bio-intro-containers/exercises/database_blast`:
 
 ```bash
 ls ../database_blast
@@ -43,7 +43,7 @@ zebrafish.1.protein.faa.gz
 You can re-use the same BLAST image you already downloaded.  To save time in typing (and reduce typos!), you can store the full path in a shell variable for later use:
 
 ```bash
-export blast_image="/data/abacbs-containers/exercises/blast_1/blast_2.9.0--pl526h3066fca_4.sif"
+export blast_image="/data/bio-intro-containers/exercises/blast_1/blast_2.9.0--pl526h3066fca_4.sif"
 ```
 
 Check this all works:
@@ -66,7 +66,7 @@ singularity exec $blast_image makeblastdb -in zebrafish.1.protein.faa -dbtype pr
 
 ```output
 Building a new DB, current time: 11/16/2019 19:14:43
-New DB name:   /data/abacbs-containers/exercises/database_blast/zebrafish.1.protein.faa
+New DB name:   /data/bio-intro-containers/exercises/database_blast/zebrafish.1.protein.faa
 New DB title:  zebrafish.1.protein.faa
 Sequence type: Protein
 Keep Linkouts: T
@@ -99,7 +99,7 @@ cd ../blast_2
 > > ```
 > >
 > > ```error
-> > BLAST Database error: No alias or index file found for protein database [../database_blast/zebrafish.1.protein.faa] in search path [/data/work/gitrepos/Trainings/abacbs-containers/exercises/blast_2::]
+> > BLAST Database error: No alias or index file found for protein database [../database_blast/zebrafish.1.protein.faa] in search path [/data/work/gitrepos/Trainings/bio-intro-containers/exercises/blast_2::]
 > > ```
 > {: .solution}
 >
@@ -122,8 +122,8 @@ cd ../blast_2
 > 
 > > ## More possible solutions
 > >
-> > Note that the full path of the database directory is `/data/abacbs-containers/exercises/database_blast`.  
-> > Therefore, mounting any of these would also work: `/data`, `/data/abacbs-containers`, `/data/abacbs-containers/exercises`.
+> > Note that the full path of the database directory is `/data/bio-intro-containers/exercises/database_blast`.  
+> > Therefore, mounting any of these would also work: `/data`, `/data/bio-intro-containers`, `/data/bio-intro-containers/exercises`.
 > {: .solution}
 {: .challenge}
 
@@ -154,7 +154,7 @@ To save you some potentially long download times, we have pre-cached for you the
 Now, start with changing directory to the one for this exercise:
 
 ```bash
-cd /data/abacbs-containers/exercises/pipeline/data
+cd /data/bio-intro-containers/exercises/pipeline/data
 ```
 
 It contains input files and useful scripts:
@@ -261,7 +261,7 @@ The key execution lines are just four though, and make use of three packages (le
 
 > ## SIF images in your current directory
 > 
-> We're in `/data/abacbs-containers/exercises/pipeline/data`.  
+> We're in `/data/bio-intro-containers/exercises/pipeline/data`.  
 > Check the downloaded image files (`.sif` extension) are actually in the current directory, using `ls`.
 > 
 > > ## Solution
@@ -456,9 +456,9 @@ You've just reflected on how to containerise an entire pipeline, well done!
 > > ```bash
 > > #!/bin/bash
 > > 
-> > salmon_image="/data/abacbs-containers/exercises/pipeline/data/salmon_1.2.1--hf69c8f4_0.sif"
-> > fastqc_image="/data/abacbs-containers/exercises/pipeline/data/fastqc_0.11.9--0.sif"
-> > multiqc_image="/data/abacbs-containers/exercises/pipeline/data/multiqc_1.9--pyh9f0ad1d_0.sif"
+> > salmon_image="/data/bio-intro-containers/exercises/pipeline/data/salmon_1.2.1--hf69c8f4_0.sif"
+> > fastqc_image="/data/bio-intro-containers/exercises/pipeline/data/fastqc_0.11.9--0.sif"
+> > multiqc_image="/data/bio-intro-containers/exercises/pipeline/data/multiqc_1.9--pyh9f0ad1d_0.sif"
 > > 
 > > export SINGULARITY_BINDPATH="/data"
 > > 

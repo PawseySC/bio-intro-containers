@@ -21,7 +21,7 @@ keypoints:
 Let's start and `cd` into the root demo directory:
 
 ```bash
-cd /data/abacbs-containers/exercises
+cd /data/bio-intro-containers/exercises
 ```
 
 What directories can we access from the container?  
@@ -54,7 +54,7 @@ pwd
 ```
 
 ```output
-/data/abacbs-containers/exercises
+/data/bio-intro-containers/exercises
 ```
 
 And now the container:
@@ -63,7 +63,7 @@ singularity exec docker://ubuntu:18.04 pwd
 ```
 
 ```output
-/data/abacbs-containers/exercises
+/data/bio-intro-containers/exercises
 ```
 
 By default, the container runs from the host working directory!

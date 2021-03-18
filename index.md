@@ -13,4 +13,4 @@ permalink: index.html  # Is the only page that don't follow the partner /:path/i
 {: .prereq}
 
 
-Like this tutorial?  **Star** it on [Github (button on top right)](https://github.com/pawseySC/abacbs-containers)!
+Like this tutorial?  **Star** it on [Github (button on top right)](https://github.com/pawseySC/bio-intro-containers)!
