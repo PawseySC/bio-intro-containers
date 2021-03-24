@@ -34,6 +34,14 @@ The best place to find useful base image is the [Docker Hub](https://hub.docker.
     - *Data science* Jupyter, including Python, scientific Python packages, R, Tidyverse and more: `jupyter/datascience-notebook:latest`.
 
 
+> ## IMPORTANT: which base images to use for the next steps?
+> 
+> As we don't continuously update the content of this tutorial, in the following exercises please use only image tags from the list above, and only for the suggested image names.
+>
+> We've pre-cached the images that are relevant to this tutorial image in the virtual machine, so that the following pull processes should only take a few seconds.
+{: .callout}
+
+
 ### Exercise 1: Write an RStudio Dockerfile
 
 The first exercise in this session is to write a little Dockerfile for the R package `ggtree`.  This package provides functionalities to represent phylogenetic trees using R, by building on top of the [Tidyverse](https://www.tidyverse.org) collection of data science packages, and in particular the plotting library `ggplot2`.  
