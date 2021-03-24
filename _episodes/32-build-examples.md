@@ -132,6 +132,38 @@ Use a text editor to create a blank `Dockerfile`; both `nano` and `vi` are avail
 {: .challenge}
 
 
+> ## BONUS: Test that the image works
+> 
+> If you have time, run the following command from the Docker container using `docker run <IMAGE> <COMMAND>`, to query the package version:
+> 
+> ```bash
+> R -e 'packageVersion("ggtree")'
+> ```
+> 
+> > ## Solution
+> > 
+> > ```bash
+> > sudo docker run ggtree:2.0.4 R -e 'packageVersion("ggtree")'
+> > ```
+> > 
+> > ```output
+> > R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+> > Copyright (C) 2019 The R Foundation for Statistical Computing
+> > Platform: x86_64-pc-linux-gnu (64-bit)
+> > 
+> > [..]
+> > 
+> > > packageVersion("ggtree")
+> > [1] ‘2.0.4’
+> > > 
+> > > 
+> > ```
+> > 
+> > The container seems to be working, and `ggtree` is at version 2.0.4.
+> {: .solution}
+{: .challenge}
+
+
 ### Converting the Docker image into Singularity format
 
 We're not doing it now to save time, but remember that the last step required to use the built image with Singularity is to turn it into a SIF file.  You'll need a Singularity installation in conjunction with Docker:
