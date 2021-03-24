@@ -242,7 +242,7 @@ The key execution lines are just four though, and make use of three packages (le
 > To save time, you're not going to search for the images on the online registry.  
 > Instead, your first task is to download the following container images.
 > 
-> *IMPORTANT*: use only these images, as they have been pre-cached in the virtual machine to speed up the pull processes.
+> **IMPORTANT**: use only these images, as they have been pre-cached in the virtual machine to speed up the pull processes.
 > 
 > ```source
 > quay.io/biocontainers/salmon:1.2.1--hf69c8f4_0
