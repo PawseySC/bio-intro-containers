@@ -132,13 +132,14 @@ Use a text editor to create a blank `Dockerfile`; both `nano` and `vi` are avail
 {: .challenge}
 
 
-> ## BONUS: Test that the image works
+> ## Bonus: test that the image works
 > 
-> If you have time, run the following command from the Docker container using `docker run <IMAGE> <COMMAND>`, to query the package version:
+> If you have time, run the following command from the Docker container using `sudo docker run <IMAGE> <COMMAND>`, to query the package version:
 > 
 > ```bash
 > R -e 'packageVersion("ggtree")'
 > ```
+> 
 > 
 > > ## Solution
 > > 
