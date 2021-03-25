@@ -49,7 +49,7 @@ The first exercise in this session is to write a little Dockerfile for the R pac
 First, `cd` into the appropriate directory:
 
 ```bash
-cd /data/bio-intro-containers/exercises/build/r-ggtree
+cd /data/bio-intro-containers/exercises/build_examples/r-ggtree
 ```
 
 Use a text editor to create a blank `Dockerfile`; both `nano` and `vi` are available, pick your favourite.
@@ -188,7 +188,7 @@ In this second exercise you're going to build an image for the popular bioinform
 First, `cd` into the appropriate directory, and then create a blank `Dockerfile` with a text editor:
 
 ```bash
-cd /data/bio-intro-containers/exercises/build/conda-samtools
+cd /data/bio-intro-containers/exercises/build_examples/conda-samtools
 ```
 
 
